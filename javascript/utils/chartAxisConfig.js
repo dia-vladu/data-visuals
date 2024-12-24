@@ -13,11 +13,9 @@ export const oxAxisConfig = (height, width) => ({
 });
 
 function getGridLineScale(i, data) {
-    console.log('data: ', data);
     let maxi = Math.max(...data.map(val => val.value));
     let mini = Math.min(...data.map(val => val.value));
-    console.log('maxi: ', maxi);
-    console.log('mini: ', mini);
+    
     if (maxi >= 1000000) {
         maxi /= 1000000;
         if (mini >= 1000000) {
@@ -30,7 +28,7 @@ function getGridLineScale(i, data) {
         }
     }
     let gridLineScale = ((Math.ceil(maxi) - Math.floor(mini)) / 5) * i + Math.floor(mini)
-    console.log(gridLineScale)
+
     return gridLineScale;
 }
 

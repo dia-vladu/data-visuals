@@ -54,7 +54,7 @@ function drawReferenceText(referenceTextConfig, data, svg, height ) {
 }
 
 // Main function to draw axe, grid lines, and reference text if available
-function drawAxisAndGrid( axisConfig, data, svg, height, width ) {
+function drawAxisAndGrid( axisConfig, data, svg, height ) {
     const { axisLineConfig, gridLineConfig, referenceTextConfig } = axisConfig;
 
     // Draw the axis line (either OX or OY)
@@ -71,13 +71,13 @@ function drawAxisAndGrid( axisConfig, data, svg, height, width ) {
     }
 }
 
-function drawIndicatorUnitText(selectedOption, selectedIndicator, position = { x: 55, y: 20 }) {
+function drawIndicatorUnitText(selectedCountry, selectedIndicator, position = { x: 55, y: 20 }) {
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     
     if (selectedIndicator === "PIB") {
         text.textContent = 'thousands';
     } else if (selectedIndicator === 'POP') {
-        if (['CY', 'LU', 'MT'].includes(selectedOption)) {
+        if (['CY', 'LU', 'MT'].includes(selectedCountry)) {
             text.textContent = 'hundreds of thousands';
         } else {
             text.textContent = 'millions';
@@ -94,9 +94,9 @@ function drawIndicatorUnitText(selectedOption, selectedIndicator, position = { x
     return text;
 }
 
-function drawTitle(svg, selectedOption, width) {
+function drawTitle(svg, selectedCountry, width) {
     const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    title.innerHTML = `${countries[selectedOption]}`;
+    title.innerHTML = `${countries[selectedCountry]}`;
     title.setAttribute('x', width - 110);
     title.setAttribute('y', 20);
     title.setAttribute('fill', 'rgb(144, 146, 164)');
@@ -104,11 +104,11 @@ function drawTitle(svg, selectedOption, width) {
     svg.append(title);
 }
 
-function filterData(data, selectedOption, selectedIndicator) {
-    return data.filter(item => item.country === selectedOption && item.indicator === selectedIndicator);
+function filterData(data, selectedCountry, selectedIndicator) {
+    return data.filter(item => item.country === selectedCountry && item.indicator === selectedIndicator);
 }
 
-function drawChart(data, selectedOption, selectedIndicator, svg, width, height) {
+function drawChart(data, selectedCountry, selectedIndicator, svg, width, height) {
     svg.innerHTML = ""; // Clear previous SVG content
 
     //drawAxisAndGrid(oxAxisConfig, data, svg, height, width);
@@ -116,10 +116,10 @@ function drawChart(data, selectedOption, selectedIndicator, svg, width, height) 
     drawAxisAndGrid(oyAxisConfig(height, width), data, svg, height, width);
 
     // Draw the indicator unit text and title
-    const indicatorText = drawIndicatorUnitText(selectedOption, selectedIndicator);
+    const indicatorText = drawIndicatorUnitText(selectedCountry, selectedIndicator);
     svg.append(indicatorText); 
 
-    drawTitle(svg, selectedOption, width);
+    drawTitle(svg, selectedCountry, width);
 }
 
 export {drawAxisAndGrid, drawIndicatorUnitText, drawTitle, filterData, drawChart};

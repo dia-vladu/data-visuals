@@ -33,8 +33,14 @@ export const years = [
     "2014", "2015", "2016", "2017", "2018", "2019", "2020"
 ];
 
-export const indicators = [
-    "sdg_08_10?na_item=B1GQ&unit=CLV10_EUR_HAB", //PIB
-    "demo_mlexpec?sex=T&age=Y1",                 //SV
-    "demo_pjan?sex=T&age=TOTAL"                  //POP
-];
+export const indicators = ['SV', 'POP', 'PIB'];
+
+export const indicatorMap = {
+    'SV': 'demo_mlexpec?sex=T&age=Y1',
+    'POP': 'demo_pjan?sex=T&age=TOTAL',
+    'PIB': 'sdg_08_10?na_item=B1GQ&unit=CLV10_EUR_HAB'
+};
+
+export const baseUrl = [
+    "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/"
+]

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Data Visuals</title>
     <link rel="stylesheet" href="./css/project.css" />
+    <link rel="icon" href="./media/chart.png">
     <script type="module" src="./javascript/main.js"></script>
   </head>
   <body>
@@ -19,7 +20,6 @@
         </div>
         <div class="row">
           <div class="col-content">
-            <!--Elemente pentru BAR CHART-->
             <div class="card" id="bar_chart_card">
               <div class="title" id="tara_indicator_bc">
                 <input
@@ -35,9 +35,9 @@
                 <label for="line" class="chart_type">LINE CHART</label>
               </div>
               <div class="chart">
-                <svg id="svg_bc" width="1150" height="350"></svg>
+                <svg id="svg" width="1150" height="350"></svg>
                 <br />
-                <select id="select_bc">
+                <select id="selector">
                   <option value="BE">BE</option>
                   <option value="BG">BG</option>
                   <option value="CZ">CZ</option>
@@ -69,17 +69,17 @@
 
                 <input
                   type="radio"
-                  name="optiune_bc"
+                  name="option"
                   id="PIB"
                   value="PIB"
                   checked
                 />
                 <label for="PIB" id="PIB">GDP</label>
 
-                <input type="radio" name="optiune_bc" id="SV" value="SV" />
+                <input type="radio" name="option" id="SV" value="SV" />
                 <label for="SV" id="SV">Life expectancy</label>
 
-                <input type="radio" name="optiune_bc" id="POP" value="POP" />
+                <input type="radio" name="option" id="POP" value="POP" />
                 <label for="POP" id="POP">Population</label>
               </div>
             </div>

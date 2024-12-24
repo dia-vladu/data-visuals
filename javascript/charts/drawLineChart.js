@@ -3,6 +3,7 @@ import { setElementColor } from "../utils/colorUtils.js";
 import { showBootstrapTooltip, hideBootstrapTooltip, throttle } from './tooltip.js';
 
 let throttleMouseMoveHandler;
+let parsedPoints = [];
 
 function populatePoints(data, width, height) {
     let n = data.length;
@@ -30,15 +31,15 @@ function populatePoints(data, width, height) {
         return { xi, yi };
     });
 
+    parsedPoints = points;
+
     // Convert points to a string representation
-    console.log('points:', points);
     const pointString = points.map(point => `${point.xi},${point.yi}`).join(' ');
 
     return pointString;
 }
 
 function drawPolyLine(pointString, selectedIndicator, svg) {
-
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
     line.setAttribute('points', pointString);
     line.setAttribute('fill', 'none');
@@ -46,25 +47,24 @@ function drawPolyLine(pointString, selectedIndicator, svg) {
     line.setAttribute('stroke-width', 3);
     line.setAttribute('stroke-linecap', 'round');
     svg.append(line);
-
 }
 
 function drawLineChart(objects, selectedOption, selectedIndicator, svg, width, height) {
     
     const data = filterData(objects, selectedOption, selectedIndicator);
-    
+
+    parsedPoints = [];
     drawChart(data, selectedOption, selectedIndicator, svg, width, height);
 
     const pointString = populatePoints(data, width, height);
-    console.log("pointString: ", pointString);
 
     drawPolyLine(pointString, selectedIndicator, svg);
 
     // Parse pointString into an array of points to be used in mouse move detection
-    const parsedPoints = pointString.split(' ').map(point => {
-        const [xi, yi] = point.split(',');
-        return { xi: parseFloat(xi), yi: parseFloat(yi) };
-    });
+    // const parsedPoints = pointString.split(' ').map(point => {
+    //     const [xi, yi] = point.split(',');
+    //     return { xi: parseFloat(xi), yi: parseFloat(yi) };
+    // });
 
     // Add mousemove event listener for tooltip
     svg.addEventListener('mousemove', throttleMouseMoveHandler = throttle((e) => {
@@ -81,7 +81,6 @@ function drawLineChart(objects, selectedOption, selectedIndicator, svg, width, h
             // Adjust the tolerance value for hover detection
             if (distance < 10) {
                 foundPoint = data[i];
-                console.log(foundPoint);
                 break;
             }
         }
@@ -97,32 +96,51 @@ function drawLineChart(objects, selectedOption, selectedIndicator, svg, width, h
     svg.addEventListener('mouseleave', hideBootstrapTooltip);
 }
 
-export function initializeLineChart(objects, svg, width, height, selector, buttons) {
+export function initializeLineChart(objects, svg, width, height, selectedOption, selectedIndicator, selector, buttons) {
+    svg.innerHTML = "";
+    parsedPoints = [];
+    // Draw the line chart initially
+    drawLineChart(objects, selectedOption, selectedIndicator, svg, width, height);
 
-    let selectedOptionBarChart = selector.options[selector.selectedIndex].text;
-    let selectedIndicatorBarChart = document.querySelector("input[name='optiune_bc']:checked").value;
+    // Event listener for changes in the dropdown selector
+    const onSelectorChange = () => {
+        selectedOption = selector.options[selector.selectedIndex].text;
+        parsedPoints = [];
+        svg.innerHTML = "";
+        drawLineChart(objects, selectedOption, selectedIndicator, svg, width, height);
+    };
 
-    drawLineChart(objects, selectedOptionBarChart, selectedIndicatorBarChart, svg, width, height);
+    // Event listener for radio button changes (indicator selection)
+    const onButtonClick = (e) => {
+        if (e.target.checked) {
+            selectedIndicator = e.target.value;
+            parsedPoints = [];
+            svg.innerHTML = "";
+            drawLineChart(objects, selectedOption, selectedIndicator, svg, width, height);
+        }
+    };
 
-    // Add event listener for changes in the dropdown selector
-    selector.addEventListener('change', () => {
-        selectedOptionBarChart = selector.options[selector.selectedIndex].text;
-        drawLineChart(objects, selectedOptionBarChart, selectedIndicatorBarChart, svg, width, height);
-    });
+    // Attach event listeners
+    selector.addEventListener('change', onSelectorChange);
+    buttons.forEach(button => button.addEventListener('click', onButtonClick));
 
-    // Add event listeners for the radio buttons (indicator selection)
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (button.checked) {
-                selectedOptionBarChart = selector.options[selector.selectedIndex].text;
-                selectedIndicatorBarChart = button.value;
-                drawLineChart(objects, selectedOptionBarChart, selectedIndicatorBarChart, svg, width, height);
-            }
-        });
-    });
+    // Store cleanup function to remove event listeners when switching chart types
+    svg.lineChartListeners = () => {
+        selector.removeEventListener('change', onSelectorChange);
+        buttons.forEach(button => button.removeEventListener('click', onButtonClick));
+    };
 }
 
-export function removeMouseHandlers(svg) {
+export function removeMouseHandlersLineChart(svg) {
+    // Cleanup event listeners when switching to another chart
+    if (svg.lineChartListeners) {
+        svg.lineChartListeners();
+    }
+
+    // Remove the mousemove event handler
     svg.removeEventListener('mousemove', throttleMouseMoveHandler);
     svg.removeEventListener('mouseleave', hideBootstrapTooltip);
+
+    // Clear parsed points to avoid showing old data on new chart
+    parsedPoints = [];
 }
