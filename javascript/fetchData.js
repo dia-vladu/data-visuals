@@ -1,4 +1,4 @@
-import { baseUrl, indicatorMap } from "./constants/constants.js";
+import { baseUrl } from "./constants/constants.js";
 
 export function buildString(prefix, items) {
     return items.map(item => `${prefix}=${item}`).join('');
