@@ -24,7 +24,7 @@ export function processAndStoreData(indicator, data, years, countries, objects) 
 
     countries.forEach((country, countryIndex) => {
         years.forEach((year, yearIndex) => {
-            const valueIndex = 15 * countryIndex + yearIndex;
+            const valueIndex = years.length * countryIndex + yearIndex;
             objects.push({
                 "country": country,
                 "year": year,
