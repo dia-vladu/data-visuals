@@ -16,7 +16,7 @@ Data Visuals is designed to provide users with an intuitive way to explore key s
 in the European Union. The application allows users to view GDP per capita, life expectancy, and population trends
 over time through interactive bar and line charts.
 
-The dataset includes data from 2000 to 2018 for all EU countries, fetched and processed dynamically using the
+The dataset includes data from 2006 to 2020 for all EU countries, fetched and processed dynamically using the
 Eurostat API. This visualization tool is particularly helpful for analyzing historical trends and comparing
 indicators across different countries.
 
